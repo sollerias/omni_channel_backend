@@ -1,4 +1,8 @@
-// const { RateLimiterMemory } = require('rate-limiter-flexible');
+/**
+ * File: rateLimiterMemory.js
+ * -----------------
+ * Обработка запросов с клиента для предотвращения DDOS-атак.
+ */
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 const rateLimiter = new RateLimiterMemory({

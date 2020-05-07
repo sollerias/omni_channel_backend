@@ -3,7 +3,7 @@
  * -----------------
  * Приём запросов со страниц приложения.
  */
-import * as path from 'path';
+// import * as path from 'path';
 
 // import { userClientValidation } from '../services/login';
 import express from 'express';
@@ -19,9 +19,8 @@ const MemoryStore = require('memorystore')(session);
 // const logging = require('../log/loggin');
 // const logDirectory = require('../log/server.log');
 // const errorLogDirectory = require('../log/serverError.log');
-
-const dirname = path.dirname(__filename);
-const fileName = path.basename(__filename);
+// const dirname = path.dirname(__filename);
+// const fileName = path.basename(__filename);
 // Конец: Логирование
 
 const router = express.Router();
@@ -33,8 +32,6 @@ const {
 } = process.env;
 // console.log(SESS_NAME, SESS_SECRET, SESSION_ENV)
 const IN_PROD = SESSION_ENV === 'production';
-// Содержит данные по сессиям пользователя. Пр.: { 489: ['sdfsdfdsf', 'gdgdgdgdfgdfg']}
-const userGeneralObject = {};
 
 // Инициализация сессии
 router.use(session({
@@ -67,8 +64,6 @@ router.use(async (req, res, next) => {
   // console.log('middleware/client host : ', req.headers.host);
   console.log('middleware/client host : ', req.get('host'));
   console.log('middleware/client authorization : ', req.get('authorization'));
-
-
   // console.log('req protocol: ', req.protocol);
   // console.log('This is middleware session: ', req.session);
   console.log('middleware session.id: ', req.session.id);
@@ -87,7 +82,7 @@ router.use(async (req, res, next) => {
 
 /**
  *  redirectLogin() - Отправляет на клиент инфу, что нужно редиректить в логин.
- *  Срабатывает, если не установлена сессия
+ *  Срабатывает, если на клиенте не установлена сессия
  * @param {*} req
  * @param {*} res
  * @param {*} next
@@ -146,7 +141,6 @@ router.post('/main', redirectLogin, (req, res) => {
   console.log('main session.id: ', req.session.id);
   // console.log('Main method req.session: ', req.session)
   const { user } = res.locals;
-  console.log('main session.id: ', res.locals);
   return res.json(user);
 });
 
@@ -155,12 +149,10 @@ router.post('/main', redirectLogin, (req, res) => {
  * Удаляет сессию. Очищает куки.
  */
 router.delete('/logout', redirectLogin, (req, res) => {
-  const journalName = 'logout';
+  // const journalName = 'logout';
   // console.log(req.body.userId)
-  // console.log('This is logout: ', userGeneralObject)
   // console.log('This is logout: ', req.session)
-  const data = JSON.stringify({ 'logout userGeneralObject': userGeneralObject });
-  logging.writeLog(logDirectory, dirname, fileName, journalName, data);
+  // logging.writeLog(logDirectory, dirname, fileName, journalName, data);
   req.session.destroy((err) => {
     if (err) {
       return res.send({ error: 'Logout error' });
