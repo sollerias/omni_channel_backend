@@ -16,8 +16,8 @@ const MemoryStore = require('memorystore')(session);
 // const chalk = require('chalk');
 
 // Начало: Логирование
-const logging = require('../log/loggin');
-const logDirectory = require('../log/server.log');
+// const logging = require('../log/loggin');
+// const logDirectory = require('../log/server.log');
 // const errorLogDirectory = require('../log/serverError.log');
 
 const dirname = path.dirname(__filename);
