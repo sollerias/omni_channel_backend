@@ -9,7 +9,7 @@ import * as path from 'path';
 import express from 'express';
 import session from 'express-session';
 import { userClientValidation } from '../services/validations/user';
-import { getUser } from '../interfaces/pyLogin';
+import getUser from '../interfaces/pyLogin';
 import { statusAnswer, parseError } from '../utils/helpers';
 
 const MemoryStore = require('memorystore')(session);

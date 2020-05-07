@@ -18,8 +18,6 @@ app.use(cors({
     'http://localhost:8081',
   ],
   credentials: true,
-  // optionsSuccessStatus: 200,
-  // allowedHeaders: 'Content-Type, Authorization',
 }));
 
 // app.use('/api/login', login);

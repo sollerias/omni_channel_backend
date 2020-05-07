@@ -3,7 +3,7 @@ const path = require('path');
 
 let i = 0;
 
-const writeLog = async (logDirectory, dirname, fileName, journalName, data, callback) => {
+const writeLog = async (logDirectory, dirname, fileName, journalName, data) => {
   const filePath = path.format({
     dir: dirname,
     base: fileName,

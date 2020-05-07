@@ -1,9 +1,9 @@
-import * as path from 'path';
+// import * as path from 'path';
 
-const rp = require('request-promise-native');
-const Joi = require('@hapi/joi');
+// const rp = require('request-promise-native');
+// const Joi = require('@hapi/joi');
 
-const { LOG } = path.join(`${__dirname}/../settings/folderPath`);
+// const { LOG } = path.join(`${__dirname}/../settings/folderPath`);
 
 // Начало: Логирование
 // const logging = path.join(`${LOG}/loggin`);
@@ -29,7 +29,7 @@ const { statusAnswer } = require('../utils/createCallbackAnswer');
  * sendData() - отправляет данные на сервер backend_socketio
  * @param {json} body - данные в формате JSON
  */
-export const getUser = (body) => {
+const getUser = (body) => {
   // const journalName = 'interfaces/pyLogin.js';
   console.log(body);
   const pipka = {
@@ -80,6 +80,8 @@ export const getUser = (body) => {
   //     return errorBody;
   //   });
 };
+
+export default getUser;
 // console.log(getUser({ login: 'kek', password: 'vorobek' }));
 // module.exports = {
 //   getUser,
