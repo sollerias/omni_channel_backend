@@ -8,8 +8,13 @@ const userOne = {
 
 const loginUrl = '/api/pages/login';
 
-
-
+/**
+ * TODO: fix this error on test launch:
+ * Jest did not exit one second after the test run has completed.
+ * This usually means that there are asynchronous operations that
+ * weren't stopped in your tests. Consider running Jest
+ * with `--detectOpenHandles` to troubleshoot this issue.
+ */
 describe('Страница входа пользователя в приложение', () => {
   test('Должен осуществиться вход существующего пользователя', async () => {
     // console.log(app)

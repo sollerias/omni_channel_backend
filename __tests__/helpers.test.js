@@ -10,8 +10,8 @@ import {
 //   };
 // });
 
-describe('Функция statusAnswer', () => {
-  test('Должна отработать', async () => {
+describe('statusAnswer function', () => {
+  test('Must work', async () => {
     const result = await statusAnswer(true, '01', 'Authentication failed', 'some value');
 
     expect(result).toEqual(
@@ -24,7 +24,7 @@ describe('Функция statusAnswer', () => {
     );
   });
 
-  test('Должна отработать с true', async () => {
+  test('Must work with true', async () => {
     const result = await statusAnswer(true, '01', 'Authentication failed', 'some value');
 
     expect(result).toEqual(
@@ -37,7 +37,7 @@ describe('Функция statusAnswer', () => {
     );
   });
 
-  test('Должна отработать с false', async () => {
+  test('Must work with false', async () => {
     const result = await statusAnswer(false, '00', 'OK', 'some value');
 
     expect(result).toEqual(
@@ -50,7 +50,7 @@ describe('Функция statusAnswer', () => {
     );
   });
 
-  test('Должна отработать без value', async () => {
+  test('Must work without value', async () => {
     const result = await statusAnswer(false, '00', 'OK');
 
     expect(result).toEqual(
@@ -63,11 +63,11 @@ describe('Функция statusAnswer', () => {
     expect(result.value).toBeNull();
   });
 
-  test('Не должна отработать c типом Number вместо Boolean', async () => {
+  test('Must not work with type Number instead of Boolean', async () => {
     const result = await statusAnswer(134, '00', 'OK');
     // TODO: придумать как заставить JEST обрабатывать значение этого поля:
     // result[0].context.value
-    expect(result).toEqual(
+    expect(result.catchError).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           message: expect.any(String),
@@ -80,12 +80,12 @@ describe('Функция statusAnswer', () => {
     );
   });
 
-  test('Не должна отработать c типом Object вместо Boolean', async () => {
+  test('Must not work with type Object instead of Boolean', async () => {
     const result = await statusAnswer({ kek: 'pizza' }, '00', 'OK');
     // TODO: придумать как заставить JEST обрабатывать значение этого поля:
     // result[0].context.value
     // console.log('Не должна отработать c типом Number вместо Boolean: ', result[0]);
-    expect(result).toEqual(
+    expect(result.catchError).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           message: expect.any(String),
@@ -102,7 +102,7 @@ describe('Функция statusAnswer', () => {
 describe('Function encodeData', () => {
   test('Function work with string', async () => {
     const result = await encodeData('Я тебе точно, нахрен, чо-нить кого-нить где-нить когда-нить, понял?');
-    // console.log('Function encodeData: ', result);
+
     expect(result).toBe('0K8g0YLQtdCx0LUg0YLQvtGH0L3Qviwg0L3QsNGF0YDQtdC9LCDRh9C+LdC90LjRgtGMINC60L7Qs9C+LdC90LjRgtGMINCz0LTQtS3QvdC40YLRjCDQutC+0LPQtNCwLdC90LjRgtGMLCDQv9C+0L3Rj9C7Pw==');
   });
 
@@ -116,13 +116,13 @@ describe('Function encodeData', () => {
       text: 'some text',
     };
     const result = await encodeData(data);
-    // console.log('Function encodeData object: ', result);
+
     expect(result).toBe('eyJlcnJvciI6ZmFsc2UsImlkIjozNDMsImxvZ2luIjoia2VrIiwicGFzc3dvcmQiOiJ2b3JvYmVrIiwic3RhdHVzIjoiMjQ1IiwidGV4dCI6InNvbWUgdGV4dCJ9');
   });
 
   test('Function don\'t work with number', async () => {
     const result = await encodeData(4);
-    console.log('Function encodeData don\'t work: ', result);
+
     expect(result).toEqual(
       expect.objectContaining({
         error: true,
