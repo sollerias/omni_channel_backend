@@ -10,7 +10,7 @@ import express from 'express';
 import session from 'express-session';
 import { userClientValidation } from '../services/validations/user';
 import getUser from '../interfaces/pyLogin';
-import { statusAnswer, parseError } from '../utils/helpers';
+import { statusAnswer, parseError, encodeData } from '../utils/helpers';
 
 const MemoryStore = require('memorystore')(session);
 // const chalk = require('chalk');
@@ -30,7 +30,7 @@ const {
   SESS_SECRET,
   SESSION_ENV,
 } = process.env;
-// console.log(SESS_NAME, SESS_SECRET, SESSION_ENV)
+// // console.log(SESS_NAME, SESS_SECRET, SESSION_ENV)
 const IN_PROD = SESSION_ENV === 'production';
 
 // Инициализация сессии
@@ -59,24 +59,24 @@ router.use(session({
 // not password.
 // eslint-disable-next-line consistent-return
 router.use(async (req, res, next) => {
-  console.log('middleware/req.body: ', req.body);
-  console.log('middleware/client cookie: ', req.headers);
-  // console.log('middleware/client host : ', req.headers.host);
-  console.log('middleware/client host : ', req.get('host'));
-  console.log('middleware/client authorization : ', req.get('authorization'));
-  // console.log('req protocol: ', req.protocol);
-  // console.log('This is middleware session: ', req.session);
-  console.log('middleware session.id: ', req.session.id);
+  // console.log('middleware/req.body: ', req.body);
+  // console.log('middleware/client cookie: ', req.headers);
+  // // console.log('middleware/client host : ', req.headers.host);
+  // console.log('middleware/client host : ', req.get('host'));
+  // console.log('middleware/client authorization : ', req.get('authorization'));
+  // // console.log('req protocol: ', req.protocol);
+  // // console.log('This is middleware session: ', req.session);
+  // console.log('middleware session.id: ', req.session.id);
   if (req.get('host')) {
     const { userId, login, password } = req.session;
-    // console.log(chalk.blue.bgWhite('We are in the middleware: ', i++))
+    // // console.log(chalk.blue.bgWhite('We are in the middleware: ', i++))
     if (userId) {
       const userData = await getUser({ login, password });
       res.locals.user = userData;
     }
     next();
   } else {
-    return res.json(statusAnswer(true, '03', 'Authentication failed: wrong headers'));
+    return res.json(await statusAnswer(true, '03', 'Authentication failed: wrong headers'));
   }
 });
 
@@ -88,11 +88,11 @@ router.use(async (req, res, next) => {
  * @param {*} next
  */
 // eslint-disable-next-line consistent-return
-const redirectLogin = (req, res, next) => {
-  console.log('redirectLogin req: ', req.body);
-  // console.log(chalk.white.bgBlack('This is redirectLogin session: ', req.session.userId))
+const redirectLogin = async (req, res, next) => {
+  // console.log('redirectLogin req: ', req.body);
+  // // console.log(chalk.white.bgBlack('This is redirectLogin session: ', req.session.userId))
   if (!req.session.userId) {
-    return res.send({ error: statusAnswer('02', 'Not authorized session') });
+    return res.send(await statusAnswer(true, '02', 'Not authorized session'));
   }
   next();
 };
@@ -104,10 +104,10 @@ const redirectLogin = (req, res, next) => {
 * Если параметр = 1, то на клиенте происходит блокировка экрана приложения.
 */
 router.post('/login', async (req, res) => {
-  console.log('login client cookie: ', req.headers);
-  // console.log('req protocol: ', req.protocol);
-  // console.log('login req.body: ', req.body);
-  // console.log('login session.id 0: ', session.id);
+  // console.log('login client cookie: ', req.headers);
+  // // console.log('req protocol: ', req.protocol);
+  // // console.log('login req.body: ', req.body);
+  // // console.log('login session.id 0: ', session.id);
 
   // const journalName = 'login';
   try {
@@ -121,7 +121,10 @@ router.post('/login', async (req, res) => {
         req.session.userId = userData.id;
         req.session.login = userData.login;
         req.session.password = userData.password;
-        return res.json(userData);
+        // statusAnswer(false, '00', 'OK', encodeData(userData));
+        const answerToClient = await statusAnswer(false, '00', 'OK', await encodeData(userData));
+        // return res.json(userData);
+        return res.json(answerToClient);
       }
       // logging.writeLog(errorLogDirectory, dirname, fileName, journalName, userData);
       return res.json(userData);
@@ -138,8 +141,8 @@ router.post('/login', async (req, res) => {
  * Отправляет клиенту все данные по пользователю из локального хранилища.
  */
 router.post('/main', redirectLogin, (req, res) => {
-  console.log('main session.id: ', req.session.id);
-  // console.log('Main method req.session: ', req.session)
+  // console.log('main session.id: ', req.session.id);
+  // // console.log('Main method req.session: ', req.session)
   const { user } = res.locals;
   return res.json(user);
 });
@@ -150,8 +153,8 @@ router.post('/main', redirectLogin, (req, res) => {
  */
 router.delete('/logout', redirectLogin, (req, res) => {
   // const journalName = 'logout';
-  // console.log(req.body.userId)
-  // console.log('This is logout: ', req.session)
+  // // console.log(req.body.userId)
+  // // console.log('This is logout: ', req.session)
   // logging.writeLog(logDirectory, dirname, fileName, journalName, data);
   req.session.destroy((err) => {
     if (err) {

@@ -31,7 +31,7 @@ const { statusAnswer } = require('../utils/helpers');
  */
 const getUser = (body) => {
   // const journalName = 'interfaces/pyLogin.js';
-  console.log(body);
+  // console.log(body);
   const pipka = {
     error: false,
     id: 343,
@@ -47,7 +47,7 @@ const getUser = (body) => {
   }
   return statusAnswer(true, '02', 'Authentication failed');
   // End pattern
-  // // console.log(body)
+  // // // console.log(body)
   // const options = {
   //   method: 'post',
   //   body,
@@ -60,7 +60,7 @@ const getUser = (body) => {
   //   reject(error);
   // })
   //   .then((response) => {
-  //     console.log('rp response: ', response);
+  //     // console.log('rp response: ', response);
   //     if (response.error) {
   //       logging.writeLog(errorLogDirectory, dirname, fileName,
   //         journalName, JSON.stringify(response.error));
@@ -74,7 +74,7 @@ const getUser = (body) => {
   //       error_text: e.message,
   //       error_status_code: e.statusCode,
   //     };
-  //     // console.log('rp error: ', errorBody)
+  //     // // console.log('rp error: ', errorBody)
   //     logging.writeLog(errorLogDirectory, dirname, fileName, journalName,
   //       JSON.stringify(errorBody));
   //     return errorBody;
@@ -82,7 +82,7 @@ const getUser = (body) => {
 };
 
 export default getUser;
-// console.log(getUser({ login: 'kek', password: 'vorobek' }));
+// // console.log(getUser({ login: 'kek', password: 'vorobek' }));
 // module.exports = {
 //   getUser,
 // };

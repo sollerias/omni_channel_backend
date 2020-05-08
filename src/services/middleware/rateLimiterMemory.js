@@ -11,7 +11,7 @@ const rateLimiter = new RateLimiterMemory({
 });
 
 const rateLimiterMemoryMiddleware = (req, res, next) => {
-  console.log('rateLimiter: ', req.ip);
+  // console.log('rateLimiter: ', req.ip);
   rateLimiter.consume(req.ip)
     .then(() => {
       next();
