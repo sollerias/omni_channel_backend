@@ -29,18 +29,29 @@ export const statusAnswerValidation = async (error, status, text, value) => {
 };
 
 export const encodeDataValidation = async (data) => {
-  const schema = Joi.object({
-    data: Joi.alternatives()
-      .try(Joi.string(), Joi.object())
-      .required(),
-  });
-  try {
-    const result = await schema.validateAsync({ data });
-    // console.log('statusAnswer validation: ', result);
-    return result;
-  } catch (err) {
-    // console.log('statusAnswer validation error: ', err.details);
-    return err.details;
+  let result = null;
+  const schemaForObject = Joi.object()
+    .required();
+  const schemaForString = Joi.string()
+    .required();
+  if (typeof data === 'string') {
+    try {
+      result = await schemaForString.validateAsync(data);
+      console.log('statusAnswer validation: ', result);
+      return result;
+    } catch (err) {
+      console.log('statusAnswer validation error: ', { catchError: err.details });
+      return { catchError: err.details };
+    }
+  } else {
+    try {
+      result = await schemaForObject.validateAsync(data);
+      console.log('statusAnswer validation: ', result);
+      return result;
+    } catch (err) {
+      console.log('statusAnswer validation error: ', { catchError: err.details });
+      return { catchError: err.details };
+    }
   }
 };
 

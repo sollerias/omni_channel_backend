@@ -20,16 +20,30 @@ export const parseError = (err) => {
  */
 export const statusAnswer = async (error, status, text, value = null) => {
   const validation = await statusAnswerValidation(error, status, text, value);
-  // console.log('statusAnswer validation result: ', validation);
+  console.log('statusAnswer validation result: ', validation);
   return validation;
 };
 
+/**
+ * encodeData() - кодирует данные в кодировку base64
+ * @param {string or object} data - строка или объект
+ */
 export const encodeData = async (data) => {
   const validation = await encodeDataValidation(data);
-
+  let buff = null;
   console.log('encodeData/data: ', validation);
-  // const buff = Buffer.from(JSON.stringify(data));
-  const buff = Buffer.from(JSON.stringify(validation));
+  if (Object.prototype.hasOwnProperty.call(validation, 'catchError')) {
+    console.log('!!!!!', validation);
+    const result = await statusAnswer(true, '03', 'Wrong encoded data', validation);
+    console.log('00!!!!!', result);
+    return result;
+  }
+
+  if (typeof validation === 'string') {
+    buff = Buffer.from(validation);
+  } else {
+    buff = Buffer.from(JSON.stringify(validation));
+  }
 
   const base64data = buff.toString('base64');
 
