@@ -3,26 +3,20 @@
  * -----------------
  * Приём запросов со страниц приложения.
  */
-// import * as path from 'path';
-
 // import { userClientValidation } from '../services/login';
+import * as path from 'path';
 import express from 'express';
 import session from 'express-session';
 import { userClientValidation } from '../services/validations/user';
 import getUser from '../interfaces/pyLogin';
 import { statusAnswer, parseError, encodeData } from '../utils/helpers';
-
+import loggerFunction from '../services/logger';
+// import opts from '../settings/loggerOpts';
+// console.log('opening log file: ', path.join());
+// const log = require('simple-node-logger').createSimpleLogger('/src/log/server.log');
 const MemoryStore = require('memorystore')(session);
 // const chalk = require('chalk');
-
-// Начало: Логирование
-// const logging = require('../log/loggin');
-// const logDirectory = require('../log/server.log');
-// const errorLogDirectory = require('../log/serverError.log');
-// const dirname = path.dirname(__filename);
-// const fileName = path.basename(__filename);
-// Конец: Логирование
-
+const filePath = __filename;
 const router = express.Router();
 const SESS_LIFETIME = 1000 * 60 * 60 * 8;
 const {
@@ -108,7 +102,6 @@ router.post('/login', async (req, res) => {
   // // console.log('req protocol: ', req.protocol);
   // // console.log('login req.body: ', req.body);
   // // console.log('login session.id 0: ', session.id);
-
   // const journalName = 'login';
   try {
     const { login, password } = req.body;
@@ -126,10 +119,11 @@ router.post('/login', async (req, res) => {
         // return res.json(userData);
         return res.json(answerToClient);
       }
-      // logging.writeLog(errorLogDirectory, dirname, fileName, journalName, userData);
+      loggerFunction('userValidationError', filePath, userData, 'error');
       return res.json(userData);
     }
 
+    loggerFunction('userValidationError', filePath, userValidationData, 'error');
     return res.json(userValidationData);
   } catch (error) {
     return res.status(400).send(parseError(error));

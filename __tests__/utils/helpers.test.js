@@ -1,7 +1,7 @@
 import {
   statusAnswer,
   encodeData,
-} from '../src/utils/helpers';
+} from '../../src/utils/helpers';
 
 // expect.extend({
 //   isBoolean(var) {
