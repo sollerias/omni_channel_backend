@@ -137,11 +137,22 @@ router.post('/login', async (req, res) => {
  * /main - обрабатывает данные, приходящие со страницы /main.
  * Отправляет клиенту все данные по пользователю из локального хранилища.
  */
-router.post('/main', redirectLogin, (req, res) => {
+router.post('/main', redirectLogin, async (req, res) => {
   // console.log('main session.id: ', req.session.id);
   // // console.log('Main method req.session: ', req.session)
   const { user } = res.locals;
-  return res.json(user);
+  loggerFunction('mainPageSuccess', filePath, await statusAnswer(false, '00', 'OK'), 'info');
+  return res.json(await statusAnswer(false, '00', 'OK', await encodeData(user)));
+});
+
+/**
+ * logger - логгер данных, приходящих от клиента.
+ */
+router.post('/logger', redirectLogin, async (req, res) => {
+  // console.log('main session.id: ', req.session.id);
+  const logInfo = JSON.stringify(req.body);
+  loggerFunction('logFromClient', filePath, logInfo, 'error');
+  return res.json(await statusAnswer(false, '00', 'OK', 'Log is written successfully'));
 });
 
 /**
@@ -155,12 +166,14 @@ router.delete('/logout', redirectLogin, async (req, res) => {
   // logging.writeLog(logDirectory, dirname, fileName, journalName, data);
   req.session.destroy(async (err) => {
     if (err) {
-      const logInfo = await statusAnswer(true, '04', 'Session Logout error', err);
-      loggerFunction('sessionLogoutError', filePath, logInfo, 'error');
-      return res.json(logInfo);
+      const logInfoError = await statusAnswer(true, '04', 'Session Logout error', err);
+      loggerFunction('sessionLogoutError', filePath, logInfoError, 'error');
+      return res.json(logInfoError);
     }
     res.clearCookie(SESS_NAME);
-    return res.json(await statusAnswer(false, '00', 'OK'));
+    const logInfoSuccess = await statusAnswer(false, 'OK', 'OK', 'Session Logout succeeded');
+    loggerFunction('sessionLogoutSuccess', filePath, logInfoSuccess, 'info');
+    return res.json(logInfoSuccess);
   });
 });
 
