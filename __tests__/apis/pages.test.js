@@ -16,14 +16,15 @@ const loginUrl = '/api/pages/login';
  * with `--detectOpenHandles` to troubleshoot this issue.
  */
 describe('Страница входа пользователя в приложение', () => {
-  test('Должен осуществиться вход существующего пользователя', async () => {
+  it('Должен осуществиться вход существующего пользователя', async () => {
     // console.log(app)
     const response = await request(app)
       .post(loginUrl)
-      .send(userOne)
-      .expect(200);
+      .send(userOne);
+      // .expect(200);
 
     // console.log(response.body);
+    expect(response.status).toBe(200);
     expect(response.body).toEqual(
       expect.objectContaining({
         error: expect.any(Boolean),
@@ -91,6 +92,6 @@ describe('Страница входа пользователя в приложе
   });
 });
 
-afterAll(async (done) => {
-  done();
-});
+// afterAll(async (done) => {
+//   done();
+// });
