@@ -1,10 +1,10 @@
-This repository is created and maintained by the team and the community of Balt Assistans. [Read more about Balt Assistans (in Russian)](https://travelfrog.ru/contact/o-kompanii-balt-assistance-ltd/).
+This repository is created and maintained by me. [Read more about me (in Russian)](https://vk.com/gleb260791).
 ##
 # nodejs-package
 
-[![Node CI](https://github.com/hexlet-boilerplates/nodejs-package/workflows/Node%20CI/badge.svg)](https://github.com/hexlet-boilerplates/nodejs-package/actions)
-[![Maintainability](https://api.codeclimate.com/v1/badges/dfc50c2d88cd46d069c1/maintainability)](https://codeclimate.com/github/hexlet-boilerplates/nodejs-package/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/dfc50c2d88cd46d069c1/test_coverage)](https://codeclimate.com/github/hexlet-boilerplates/nodejs-package/test_coverage)
+[![Node CI](https://github.com/sollerias/omni_channel_backend/workflows/Node%20CI/badge.svg)
+[![Maintainability](https://api.codeclimate.com/v1/badges/cd2ee5d87c492b061c50/maintainability)](https://codeclimate.com/github/sollerias/omni_channel_backend/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/cd2ee5d87c492b061c50/test_coverage)](https://codeclimate.com/github/sollerias/omni_channel_backend/test_coverage)
 
 ## Setup
 
