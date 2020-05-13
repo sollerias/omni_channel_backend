@@ -1,3 +1,8 @@
+/**
+ * File: pyLogin.js
+ * -----------------
+ * Обращение к серверу pyLogin для запроса данных.
+ */
 // import * as path from 'path';
 
 // const rp = require('request-promise-native');

@@ -1,3 +1,9 @@
+/**
+ * File: helpers.js
+ * -----------------
+ * Заданы вспомогательные функции.
+ */
+
 import {
   statusAnswerValidation,
   encodeDataValidation,

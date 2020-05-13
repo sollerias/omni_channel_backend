@@ -1,3 +1,8 @@
+/**
+ * File: logger.js
+ * -----------------
+ * Логирование данных.
+ */
 import { LOG } from '../settings/folderPath';
 
 const path = require('path');
@@ -60,8 +65,9 @@ const loggerFunction = (logName, filePath, logData, logLevel) => {
       break;
   }
 
-  const appender = log.getAppenders()[0];
-  console.log('logLevel: ', logLevel, 'write to file: ', appender.__protected().currentFile);
+  // Отобразить что-нибудь из лога в консоль
+  // const appender = log.getAppenders()[0];
+  // console.log('logLevel: ', logLevel, 'write to file: ', appender.__protected().currentFile);
 };
 
 export default loggerFunction;

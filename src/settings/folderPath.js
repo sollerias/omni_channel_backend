@@ -1,3 +1,8 @@
+/**
+ * File: folderPath.js
+ * -----------------
+ * Прописаны пути к необходимым файлам.
+ */
 import { join } from 'path';
 
 export const APIS = join(`${__dirname}/../apis`);

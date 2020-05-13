@@ -1,5 +1,8 @@
 import Joi from '@hapi/joi';
 import { statusAnswer } from '../../utils/helpers';
+import loggerFunction from '../logger';
+
+const filePath = __filename;
 
 // const { LOG } = path.join(`${__dirname}/../settings/folderPath`);
 
@@ -29,7 +32,8 @@ export const userClientValidation = async (login, password) => {
     const value = await schema.validateAsync({ login, password });
     return statusAnswer(false, '00', 'OK', value);
   } catch (err) {
-    // console.log('huy', err);
+    const logInfo = JSON.stringify({ catchError: err.details });
+    loggerFunction('userClientValidation', filePath, logInfo, 'warn');
     return statusAnswer(true, '01', err.details[0].message);
   }
 };
@@ -57,9 +61,8 @@ export const userObjectFromServerValidation = async (userObject) => {
     const value = await schema.validateAsync(userObject);
     return statusAnswer(false, '00', 'OK', value);
   } catch (err) {
-    // console.log('huy', err);
+    const logInfo = JSON.stringify({ catchError: err.details });
+    loggerFunction('userObjectFromServerValidation', filePath, logInfo, 'warn');
     return statusAnswer(true, '01', err.details[0].message);
   }
 };
-
-// console.log(userClientValidation('kek', 'vorobek'));
