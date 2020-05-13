@@ -3,8 +3,6 @@
  * -----------------
  * Приём запросов со страниц приложения.
  */
-// import { userClientValidation } from '../services/login';
-import * as path from 'path';
 import express from 'express';
 import session from 'express-session';
 import { userClientValidation } from '../services/validations/user';
@@ -70,7 +68,9 @@ router.use(async (req, res, next) => {
     }
     next();
   } else {
-    return res.json(await statusAnswer(true, '03', 'Authentication failed: wrong headers'));
+    const logInfo = await statusAnswer(true, '03', 'Authentication failed: wrong headers');
+    loggerFunction('generalMiddlewareError', filePath, logInfo, 'warn');
+    return res.json(logInfo);
   }
 });
 
@@ -86,7 +86,9 @@ const redirectLogin = async (req, res, next) => {
   // console.log('redirectLogin req: ', req.body);
   // // console.log(chalk.white.bgBlack('This is redirectLogin session: ', req.session.userId))
   if (!req.session.userId) {
-    return res.send(await statusAnswer(true, '02', 'Not authorized session'));
+    const logInfo = await statusAnswer(true, '02', 'Not authorized session');
+    loggerFunction('redirectLoginError', filePath, logInfo, 'warn');
+    return res.json(logInfo);
   }
   next();
 };
@@ -119,13 +121,14 @@ router.post('/login', async (req, res) => {
         // return res.json(userData);
         return res.json(answerToClient);
       }
-      loggerFunction('userValidationError', filePath, userData, 'error');
+      loggerFunction('userValidationError', filePath, userData, 'warn');
       return res.json(userData);
     }
 
-    loggerFunction('userValidationError', filePath, userValidationData, 'error');
+    loggerFunction('userValidationError', filePath, userValidationData, 'warn');
     return res.json(userValidationData);
   } catch (error) {
+    loggerFunction('userCreditError', filePath, parseError(error), 'error');
     return res.status(400).send(parseError(error));
   }
 });
@@ -145,17 +148,19 @@ router.post('/main', redirectLogin, (req, res) => {
  * /logout - срабатывает при нажатии кнопки Выход на клиенте.
  * Удаляет сессию. Очищает куки.
  */
-router.delete('/logout', redirectLogin, (req, res) => {
+router.delete('/logout', redirectLogin, async (req, res) => {
   // const journalName = 'logout';
   // // console.log(req.body.userId)
   // // console.log('This is logout: ', req.session)
   // logging.writeLog(logDirectory, dirname, fileName, journalName, data);
-  req.session.destroy((err) => {
+  req.session.destroy(async (err) => {
     if (err) {
-      return res.send({ error: 'Logout error' });
+      const logInfo = await statusAnswer(true, '04', 'Session Logout error', err);
+      loggerFunction('sessionLogoutError', filePath, logInfo, 'error');
+      return res.json(logInfo);
     }
     res.clearCookie(SESS_NAME);
-    return res.send({ logout: 'success' });
+    return res.json(await statusAnswer(false, '00', 'OK'));
   });
 });
 

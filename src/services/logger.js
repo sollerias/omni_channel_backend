@@ -2,19 +2,19 @@ import { LOG } from '../settings/folderPath';
 
 const path = require('path');
 
-const loggerFilePath = path.join(`${LOG}/test.log`);
-const SimpleLogger = require('simple-node-logger');
+const opts = {
+  logDirectory: path.join(`${LOG}`),
+  fileNamePattern: 'dynamic-<date>.log',
+  dateFormat: 'DD.MM.YYYY',
+  // domain: `MyApplication-${port}`,
+  level: 'trace',
+  // loggerConfigFile: `${__dirname}/logger-config.json`,
+  refresh: 60 * 1000, // read/refresh each 60 seconds
+};
 
-const manager = new SimpleLogger({
-  errorEventName: 'error',
-  fileNamePattern: 'roll-<DATE>.log',
-  dateFormat: 'YYYY.MM.DD',
-});
+// const SimpleLogger = require('simple-node-logger');
+const log = require('simple-node-logger').createRollingFileLogger(opts);
 
-
-process.on('error', (msg) => {
-  console.log('Error event caught: ', JSON.stringify(msg));
-});
 /**
  * loggerFunction() - создает сущность логгера
  * @param {string} logName - название лога
@@ -24,18 +24,18 @@ process.on('error', (msg) => {
  * trace, debug, info, warn, error, fatal
  */
 const loggerFunction = (logName, filePath, logData, logLevel) => {
-  manager.createConsoleAppender();
-  manager.createFileAppender({ logFilePath: loggerFilePath });
+  log.setLevel('trace');
 
-  const log = manager.createLogger(logName, 'trace');
   let logDataResult;
-  // logName = manager.createLogger('CategoryOne', 'trace');
+
   if (typeof logData === 'object') {
     logDataResult = JSON.stringify(logData);
   } else {
     logDataResult = logData;
   }
-  const logText = `| Path to file: ${filePath} | Log data: ${logDataResult} | Acepted at ${new Date().toJSON()}`;
+
+  const logText = `| ${logName} | Path to file: ${filePath} | Log data: ${logDataResult} | Acepted at ${new Date().toJSON()}`;
+
   switch (logLevel) {
     case 'trace':
       log.trace(logText);
@@ -60,20 +60,8 @@ const loggerFunction = (logName, filePath, logData, logLevel) => {
       break;
   }
 
-  // log1.trace('this is a simple trace log statement (should not show)');
-  // log1.debug('this is a simple debug log statement (should not show)');
-  // log1.info('this is a simple info log statement/entry');
-  // log2.warn('this is a simple warn log statement/entry');
-  // log1.error('this is a simple error log statement/entry');
-  // log1.error();
-  // log2.fatal('this is a simple fatal log statement/entry');
-  // log2.trace('this is a simple trace log statement (should show)');
-  // log1.debug('this is a simple debug log statement (should show)');
-
-  const loggers = manager.getLoggers();
-  loggers.forEach((logger) => {
-    console.log('stats: ', logger.getCategory(), logger.getStats());
-  });
+  const appender = log.getAppenders()[0];
+  console.log('logLevel: ', logLevel, 'write to file: ', appender.__protected().currentFile);
 };
 
 export default loggerFunction;
