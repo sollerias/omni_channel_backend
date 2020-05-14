@@ -7,11 +7,13 @@ import express from 'express';
 import session from 'express-session';
 import { userClientValidation } from '../services/validations/user';
 import getUser from '../interfaces/pyLogin';
-import { statusAnswer, parseError, encodeData } from '../utils/helpers';
+import {
+  statusAnswer,
+  parseError,
+  encodeData,
+} from '../utils/helpers';
 import loggerFunction from '../services/logger';
-// import opts from '../settings/loggerOpts';
-// console.log('opening log file: ', path.join());
-// const log = require('simple-node-logger').createSimpleLogger('/src/log/server.log');
+
 const MemoryStore = require('memorystore')(session);
 // const chalk = require('chalk');
 const filePath = __filename;
@@ -55,15 +57,23 @@ router.use(async (req, res, next) => {
   // console.log('middleware/client cookie: ', req.headers);
   // // console.log('middleware/client host : ', req.headers.host);
   // console.log('middleware/client host : ', req.get('host'));
-  // console.log('middleware/client authorization : ', req.get('authorization'));
+  console.log('middleware/client authorization : ', req.get('authorization'));
   // // console.log('req protocol: ', req.protocol);
   // // console.log('This is middleware session: ', req.session);
   // console.log('middleware session.id: ', req.session.id);
-  if (req.get('host')) {
-    const { userId, login, password } = req.session;
+  // if (req.get('host')) {
+  if (req.get('authorization') === `Basic ${process.env.OMNI_TOKEN}`) {
+    const {
+      userId,
+      login,
+      password,
+    } = req.session;
     // // console.log(chalk.blue.bgWhite('We are in the middleware: ', i++))
     if (userId) {
-      const userData = await getUser({ login, password });
+      const userData = await getUser({
+        login,
+        password,
+      });
       res.locals.user = userData;
     }
     next();
@@ -94,11 +104,11 @@ const redirectLogin = async (req, res, next) => {
 };
 
 /**
-* /login - обрабатывает данные, приходящие со страницы /login.
-* Производит аутентификацию пользователя. Добавляет в сессию параметры.
-* @param {integer} req.session.blocked - принимает значение 0 или 1.
-* Если параметр = 1, то на клиенте происходит блокировка экрана приложения.
-*/
+ * /login - обрабатывает данные, приходящие со страницы /login.
+ * Производит аутентификацию пользователя. Добавляет в сессию параметры.
+ * @param {integer} req.session.blocked - принимает значение 0 или 1.
+ * Если параметр = 1, то на клиенте происходит блокировка экрана приложения.
+ */
 router.post('/login', async (req, res) => {
   // console.log('login client cookie: ', req.headers);
   // // console.log('req protocol: ', req.protocol);
@@ -106,11 +116,17 @@ router.post('/login', async (req, res) => {
   // // console.log('login session.id 0: ', session.id);
   // const journalName = 'login';
   try {
-    const { login, password } = req.body;
+    const {
+      login,
+      password,
+    } = req.body;
     const userValidationData = await userClientValidation(login, password);
 
     if (userValidationData.error === false) {
-      const userData = await getUser({ login, password });
+      const userData = await getUser({
+        login,
+        password,
+      });
 
       if (userData.error === false) {
         req.session.userId = userData.id;
@@ -140,7 +156,23 @@ router.post('/login', async (req, res) => {
 router.post('/main', redirectLogin, async (req, res) => {
   // console.log('main session.id: ', req.session.id);
   // // console.log('Main method req.session: ', req.session)
-  const { user } = res.locals;
+  const {
+    user,
+  } = res.locals;
+  loggerFunction('mainPageSuccess', filePath, await statusAnswer(false, '00', 'OK'), 'info');
+  return res.json(await statusAnswer(false, '00', 'OK', await encodeData(user)));
+});
+
+/**
+ * /main - обрабатывает данные, приходящие со страницы /main.
+ * Отправляет клиенту все данные по пользователю из локального хранилища.
+ */
+router.post('/dashboard', redirectLogin, async (req, res) => {
+  // console.log('main session.id: ', req.session.id);
+  // // console.log('Main method req.session: ', req.session)
+  const {
+    user,
+  } = res.locals;
   loggerFunction('mainPageSuccess', filePath, await statusAnswer(false, '00', 'OK'), 'info');
   return res.json(await statusAnswer(false, '00', 'OK', await encodeData(user)));
 });
@@ -149,7 +181,7 @@ router.post('/main', redirectLogin, async (req, res) => {
  * logger - логгер данных, приходящих от клиента.
  */
 router.post('/logger', redirectLogin, async (req, res) => {
-  // console.log('main session.id: ', req.session.id);
+  console.log('logger: ', req.body);
   const logInfo = JSON.stringify(req.body);
   loggerFunction('logFromClient', filePath, logInfo, 'error');
   return res.json(await statusAnswer(false, '00', 'OK', 'Log is written successfully'));

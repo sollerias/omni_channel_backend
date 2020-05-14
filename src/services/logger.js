@@ -5,6 +5,7 @@
  */
 import { LOG } from '../settings/folderPath';
 
+const moment = require('moment-timezone');
 const path = require('path');
 
 const opts = {
@@ -17,7 +18,6 @@ const opts = {
   refresh: 60 * 1000, // read/refresh each 60 seconds
 };
 
-// const SimpleLogger = require('simple-node-logger');
 const log = require('simple-node-logger').createRollingFileLogger(opts);
 
 /**
@@ -39,7 +39,7 @@ const loggerFunction = (logName, filePath, logData, logLevel) => {
     logDataResult = logData;
   }
 
-  const logText = `| ${logName} | Path to file: ${filePath} | Log data: ${logDataResult} | Acepted at ${new Date().toJSON()}`;
+  const logText = `| ${logName} | Path to file: ${filePath} | Log data: ${logDataResult} | Acepted at ${moment().tz('Europe/Kaliningrad').format()}`;
 
   switch (logLevel) {
     case 'trace':
