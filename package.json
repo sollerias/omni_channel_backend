@@ -1,6 +1,6 @@
 {
   "name": "omni_channel",
-  "version": "0.1.0",
+  "version": "1.2.0",
   "description": "main_backend",
   "main": "dist/index.js",
   "bin": {
@@ -20,12 +20,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+http://atlas.accidentlaw.ru:7990/projects"
+    "url": "https://github.com/sollerias/omni_channel_backend"
   },
   "author": "Gleb Tregubov",
   "license": "ISC",
   "bugs": {
-    "url": "http://atlas.accidentlaw.ru:7990/projects/issues"
+    "url": "https://github.com/sollerias/omni_channel_backend/issues"
   },
   "jest": {
     "testEnvironment": "node"
@@ -42,7 +42,10 @@
     "hpp": "^0.2.3",
     "lodash": "^4.17.15",
     "memorystore": "^1.6.2",
-    "request-promise-native": "^1.0.8"
+    "moment-timezone": "^0.5.28",
+    "rate-limiter-flexible": "^2.1.4",
+    "request-promise-native": "^1.0.8",
+    "simple-node-logger": "^18.12.24"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
