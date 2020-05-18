@@ -200,11 +200,13 @@ router.delete('/logout', redirectLogin, async (req, res) => {
     if (err) {
       const logInfoError = await statusAnswer(true, '04', 'Session Logout error', err);
       loggerFunction('sessionLogoutError', filePath, logInfoError, 'error');
+
       return res.json(logInfoError);
     }
     res.clearCookie(SESS_NAME);
     const logInfoSuccess = await statusAnswer(false, 'OK', 'OK', 'Session Logout succeeded');
     loggerFunction('sessionLogoutSuccess', filePath, logInfoSuccess, 'info');
+
     return res.json(logInfoSuccess);
   });
 });

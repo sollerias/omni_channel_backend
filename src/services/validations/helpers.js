@@ -57,10 +57,12 @@ export const encodeDataValidation = async (data) => {
   if (typeof data === 'string') {
     try {
       result = await schemaForString.validateAsync(data);
+
       return result;
     } catch (err) {
       const logInfo = JSON.stringify({ catchError: err.details });
       loggerFunction('encodeDataValidation', filePath, logInfo, 'warn');
+
       return { catchError: err.details };
     }
   } else {
@@ -70,6 +72,7 @@ export const encodeDataValidation = async (data) => {
     } catch (err) {
       const logInfo = JSON.stringify({ catchError: err.details });
       loggerFunction('encodeDataValidation', filePath, logInfo, 'warn');
+
       return { catchError: err.details };
     }
   }
