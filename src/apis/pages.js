@@ -57,7 +57,7 @@ router.use(async (req, res, next) => {
   // console.log('middleware/client cookie: ', req.headers);
   // // console.log('middleware/client host : ', req.headers.host);
   // console.log('middleware/client host : ', req.get('host'));
-  console.log('middleware/client authorization : ', req.get('authorization'));
+  // console.log('middleware/client authorization : ', req.get('authorization'));
   // // console.log('req protocol: ', req.protocol);
   // // console.log('This is middleware session: ', req.session);
   // console.log('middleware session.id: ', req.session.id);
@@ -181,7 +181,7 @@ router.post('/dashboard', redirectLogin, async (req, res) => {
  * logger - логгер данных, приходящих от клиента.
  */
 router.post('/logger', redirectLogin, async (req, res) => {
-  console.log('logger: ', req.body);
+  // console.log('logger: ', req.body);
   const logInfo = JSON.stringify(req.body);
   loggerFunction('logFromClient', filePath, logInfo, 'error');
   return res.json(await statusAnswer(false, '00', 'OK', 'Log is written successfully'));
