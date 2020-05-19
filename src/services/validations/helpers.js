@@ -26,7 +26,7 @@ export const statusAnswerValidation = async (error, status, text, value) => {
     text: Joi.string()
       .required(),
 
-    value: Joi.alternatives().try(Joi.string(), Joi.object()).allow(null),
+    value: Joi.alternatives().try(Joi.string(), Joi.object(), Joi.array()).allow(null),
     // value: Joi.string()
     //   .allow(null),
   });

@@ -7,7 +7,11 @@ const rateLimiterMemoryMiddleware = require('./services/middleware/rateLimiterMe
 
 require('dotenv').config({ path: './src/config/dev_local.env' });
 // const login = require('./apis/login.js');
-const pages = require('./apis/pages.js');
+const pages = require('./apis/pages');
+
+const omnichannelReferenceBook = require('./apis/omnichannel/referenceBook');
+const omnichannelCustomer = require('./apis/omnichannel/customer');
+const omnichannelCase = require('./apis/omnichannel/case');
 
 
 const app = express();
@@ -24,8 +28,11 @@ app.use(cors({
   credentials: true,
 }));
 
-// app.use('/api/login', login);
 app.use('/api/pages', pages);
+app.use('/api/omnichannel/reference_book', omnichannelReferenceBook);
+app.use('/api/omnichannel/customer', omnichannelCustomer);
+app.use('/api/omnichannel/case', omnichannelCase);
+
 
 // const posts = [
 //   {
