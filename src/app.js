@@ -12,7 +12,7 @@ const pages = require('./apis/pages');
 const omnichannelReferenceBook = require('./apis/omnichannel/referenceBook');
 const omnichannelCustomer = require('./apis/omnichannel/customer');
 const omnichannelCase = require('./apis/omnichannel/case');
-
+const omnichannelTicket = require('./apis/omnichannel/ticket');
 
 const app = express();
 app.use(express.json({ extended: false }));
@@ -32,7 +32,7 @@ app.use('/api/pages', pages);
 app.use('/api/omnichannel/reference_book', omnichannelReferenceBook);
 app.use('/api/omnichannel/customer', omnichannelCustomer);
 app.use('/api/omnichannel/case', omnichannelCase);
-
+app.use('/api/omnichannel/ticket', omnichannelTicket);
 
 // const posts = [
 //   {
