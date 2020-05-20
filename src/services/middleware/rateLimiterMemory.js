@@ -6,7 +6,10 @@
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 const rateLimiter = new RateLimiterMemory({
-  points: 6, // 10 requests
+  // For production
+  // points: 6, // 6 requests
+  // For tests:
+  points: 10,
   duration: 1, // per 1 second by IP
 });
 

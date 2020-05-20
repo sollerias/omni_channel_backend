@@ -20,6 +20,7 @@ describe('Страница входа пользователя в приложе
     // console.log(app)
     const response = await request(app)
       .post(loginUrl)
+      .set('authorization', `Basic ${process.env.OMNI_TOKEN}`)
       .send(userOne);
       // .expect(200);
 
