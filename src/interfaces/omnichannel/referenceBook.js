@@ -18,19 +18,19 @@
 const getChannelTypes = () => {
   const result = [
     {
-      id: '1',
+      channel_type_id: '1',
       name: 'Viber',
     },
     {
-      id: '2',
+      channel_type_id: '2',
       name: 'WhatsApp',
     },
     {
-      id: '3',
+      channel_type_id: '3',
       name: 'Telegram',
     },
     {
-      id: '4',
+      channel_type_id: '4',
       name: 'Skype',
     },
   ];
@@ -41,15 +41,15 @@ const getChannelTypes = () => {
 const getContactTypes = () => {
   const result = [
     {
-      id: '1',
+      contact_type_id: '1',
       name: 'Телефон',
     },
     {
-      id: '2',
+      contact_type_id: '2',
       name: 'Email',
     },
     {
-      id: '3',
+      contact_type_id: '3',
       name: 'Логин',
     },
   ];
@@ -60,15 +60,15 @@ const getContactTypes = () => {
 const getCustomerTypes = () => {
   const result = [
     {
-      id: '1',
+      customer_type_id: '1',
       name: 'Физическое лицо',
     },
     {
-      id: '2',
+      customer_type_id: '2',
       name: 'Страховая компания',
     },
     {
-      id: '3',
+      customer_type_id: '3',
       name: 'Провайдер',
     },
   ];
@@ -79,16 +79,24 @@ const getCustomerTypes = () => {
 const getStatusTypes = () => {
   const result = [
     {
-      id: '1',
-      name: 'Физическое лицо',
+      status_type_id: '1',
+      name: 'Новое',
     },
     {
-      id: '2',
-      name: 'Страховая компания',
+      status_type_id: '2',
+      name: 'Назначен ответственный',
     },
     {
-      id: '3',
-      name: 'Провайдер',
+      status_type_id: '3',
+      name: 'Активное',
+    },
+    {
+      status_type_id: '4',
+      name: 'Запрос на изменение ответственного',
+    },
+    {
+      status_type_id: '5',
+      name: 'Архив',
     },
   ];
 
@@ -98,11 +106,11 @@ const getStatusTypes = () => {
 const getDirectionTypes = () => {
   const result = [
     {
-      id: '1',
+      direction_type_id: '1',
       name: 'Входящее',
     },
     {
-      id: '2',
+      direction_type_id: '2',
       name: 'Исходящее',
     },
   ];
@@ -113,23 +121,23 @@ const getDirectionTypes = () => {
 const getContentTypes = () => {
   const result = [
     {
-      id: '1',
+      content_type_id: '1',
       name: 'Текст',
     },
     {
-      id: '2',
+      content_type_id: '2',
       name: 'Файл',
     },
     {
-      id: '3',
+      content_type_id: '3',
       name: 'Изображение',
     },
     {
-      id: '4',
+      content_type_id: '4',
       name: 'Локация',
     },
     {
-      id: '5',
+      content_type_id: '5',
       name: 'Номер телефона',
     },
   ];
@@ -140,19 +148,19 @@ const getContentTypes = () => {
 const getSignalStatusTypes = () => {
   const result = [
     {
-      id: '1',
+      signal_status_type_id: '1',
       name: 'Отправлено',
     },
     {
-      id: '2',
+      signal_status_type_id: '2',
       name: 'Доставлено',
     },
     {
-      id: '3',
+      signal_status_type_id: '3',
       name: 'Прочитано',
     },
     {
-      id: '4',
+      signal_status_type_id: '4',
       name: 'Не удалось отправить',
     },
   ];

@@ -17,7 +17,7 @@ describe('Get customer', () => {
         text: expect.any(String),
         value:
           expect.objectContaining({
-            id: expect.any(String),
+            customer_id: expect.any(String),
             customer_type_id: expect.any(String),
             first_name: expect.any(String),
             last_name: expect.any(String),
@@ -41,7 +41,7 @@ describe('Get contacts', () => {
         text: expect.any(String),
         value: expect.arrayContaining([
           expect.objectContaining({
-            id: expect.any(String),
+            contact_id: expect.any(String),
             customer_id: expect.any(String),
             contact_type_id: expect.any(String),
             channel_type_id: expect.any(String),

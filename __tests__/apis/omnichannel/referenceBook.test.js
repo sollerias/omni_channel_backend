@@ -6,7 +6,7 @@ const referenceBookUrl = '/api/omnichannel/reference_book';
 describe('Get channel types', () => {
   it('Should send request', async () => {
     const response = await request(app)
-      .get(`${referenceBookUrl}/channel_types`)
+      .get(`${referenceBookUrl}/channel_type`)
       .expect(200);
 
     expect(response.body).toEqual(
@@ -16,7 +16,7 @@ describe('Get channel types', () => {
         text: expect.any(String),
         value: expect.arrayContaining([
           expect.objectContaining({
-            id: expect.any(String),
+            channel_type_id: expect.any(String),
             name: expect.any(String),
           }),
         ]),
@@ -28,7 +28,7 @@ describe('Get channel types', () => {
 describe('Get contact types', () => {
   it('Should send request', async () => {
     const response = await request(app)
-      .get(`${referenceBookUrl}/contact_types`)
+      .get(`${referenceBookUrl}/contact_type`)
       .expect(200);
 
     expect(response.body).toEqual(
@@ -38,7 +38,7 @@ describe('Get contact types', () => {
         text: expect.any(String),
         value: expect.arrayContaining([
           expect.objectContaining({
-            id: expect.any(String),
+            contact_type_id: expect.any(String),
             name: expect.any(String),
           }),
         ]),
@@ -50,7 +50,7 @@ describe('Get contact types', () => {
 describe('Get customer types', () => {
   it('Should send request', async () => {
     const response = await request(app)
-      .get(`${referenceBookUrl}/customer_types`)
+      .get(`${referenceBookUrl}/customer_type`)
       .expect(200);
 
     expect(response.body).toEqual(
@@ -60,7 +60,7 @@ describe('Get customer types', () => {
         text: expect.any(String),
         value: expect.arrayContaining([
           expect.objectContaining({
-            id: expect.any(String),
+            customer_type_id: expect.any(String),
             name: expect.any(String),
           }),
         ]),
@@ -72,7 +72,7 @@ describe('Get customer types', () => {
 describe('Get status types', () => {
   it('Should send request', async () => {
     const response = await request(app)
-      .get(`${referenceBookUrl}/status_types`)
+      .get(`${referenceBookUrl}/status_type`)
       .expect(200);
 
     expect(response.body).toEqual(
@@ -82,7 +82,7 @@ describe('Get status types', () => {
         text: expect.any(String),
         value: expect.arrayContaining([
           expect.objectContaining({
-            id: expect.any(String),
+            status_type_id: expect.any(String),
             name: expect.any(String),
           }),
         ]),
@@ -94,7 +94,7 @@ describe('Get status types', () => {
 describe('Get direction types', () => {
   it('Should send request', async () => {
     const response = await request(app)
-      .get(`${referenceBookUrl}/direction_types`)
+      .get(`${referenceBookUrl}/direction_type`)
       .expect(200);
 
     expect(response.body).toEqual(
@@ -104,7 +104,7 @@ describe('Get direction types', () => {
         text: expect.any(String),
         value: expect.arrayContaining([
           expect.objectContaining({
-            id: expect.any(String),
+            direction_type_id: expect.any(String),
             name: expect.any(String),
           }),
         ]),
@@ -116,7 +116,7 @@ describe('Get direction types', () => {
 describe('Get content types', () => {
   it('Should send request', async () => {
     const response = await request(app)
-      .get(`${referenceBookUrl}/content_types`)
+      .get(`${referenceBookUrl}/content_type`)
       .expect(200);
 
     expect(response.body).toEqual(
@@ -126,7 +126,7 @@ describe('Get content types', () => {
         text: expect.any(String),
         value: expect.arrayContaining([
           expect.objectContaining({
-            id: expect.any(String),
+            content_type_id: expect.any(String),
             name: expect.any(String),
           }),
         ]),
@@ -138,7 +138,7 @@ describe('Get content types', () => {
 describe('Get signal_status types', () => {
   it('Should send request', async () => {
     const response = await request(app)
-      .get(`${referenceBookUrl}/signal_status_types`)
+      .get(`${referenceBookUrl}/signal_status_type`)
       .expect(200);
 
     expect(response.body).toEqual(
@@ -148,7 +148,7 @@ describe('Get signal_status types', () => {
         text: expect.any(String),
         value: expect.arrayContaining([
           expect.objectContaining({
-            id: expect.any(String),
+            signal_status_type_id: expect.any(String),
             name: expect.any(String),
           }),
         ]),

@@ -1,74 +1,63 @@
 /**
  * File: socket.js
  * -----------------
- * Обращение к серверу pyLogin для запроса данных.
+ * Отправка данных на сервер сокетов.
  */
 // import * as path from 'path';
-// import {
-//   statusAnswer,
-//   parseError,
-//   encodeData,
-// } from '../../utils/helpers';
-// import loggerFunction from '../../services/logger';
+import {
+  statusAnswer,
+} from '../../utils/helpers';
+import loggerFunction from '../../services/logger';
 
+const rp = require('request-promise-native');
+const Joi = require('@hapi/joi');
 
-// const rp = require('request-promise-native');
-// const Joi = require('@hapi/joi');
+const filePath = __filename;
+const headers = {
+  'Content-Type': 'application/json; charset=utf-8',
+  // 'Accept': 'application/json',
+  // 'Cache-Control': 'no-cache',
+  // 'Pragma': 'no-cache'
+};
 
-const getCases = () => {
-  const result = {
-    count: 121,
-    next: 'http://127.0.0.1:8000/api/v1/case/?page=5',
-    previous: 'http://127.0.0.1:8000/api/v1/case/?page=3',
-    results: [
-      {
-        id: '1567899',
-        created_by: '123',
-        created_at: '2020-05-04 10:34:49',
-        updated_at: '2020-05-04 11:27:56',
-        ref_nr: '50387562-1',
-        fullname: 'Джон Кузнецов',
-        dob: '1985-05-14',
-      },
-      {
-        id: '2385585',
-        created_by: '123',
-        created_at: '2020-05-04 10:34:49',
-        updated_at: '2020-05-04 11:27:56',
-        ref_nr: '50120238-1',
-        fullname: 'Мария Иванова',
-        dob: '2000-01-01',
-      },
-      {
-        id: '2385586',
-        created_by: '123',
-        created_at: '2020-05-05 15:01:10',
-        updated_at: null,
-        ref_nr: '50120238-1',
-        fullname: 'Мария Иванова',
-        dob: '2000-01-01',
-      },
-    ],
+const url = process.env.SOCKET_NOTIFY_URL;
+
+const sendDataToOmnichannelSocket = (body) => {
+  console.log('body: ', body);
+  const options = {
+    method: 'post',
+    body,
+    json: true,
+    url,
+    headers,
   };
-  return result;
+  return new Promise((resolve) => {
+    resolve(rp(options));
+  })
+    .then(async (response) => {
+      // console.log('rp response: ', response);
+      if (response.error) {
+        const errorData = await statusAnswer(true, '10', 'Ошибка отправки данных на сокет', response.error);
+        loggerFunction('interfaces/newTicket', filePath, errorData, 'error');
+
+        return response;
+      }
+      const responseData = await statusAnswer(false, '00', 'ОK', response);
+      loggerFunction('interfaces/newTicket', filePath, responseData, 'info');
+
+      return responseData;
+    })
+    .catch(async (e) => {
+      const errorBody = {
+        error: e.name,
+        error_text: e.message,
+        error_status_code: e.statusCode,
+      };
+      const errorData = await statusAnswer(true, '10', 'Ошибка отправки данных на сокет', errorBody);
+      loggerFunction('interfaces/newTicket', filePath, errorData, 'error');
+
+      return errorData;
+    });
 };
 
-const getCase = () => {
-  const result = {
-    id: '2385585',
-    created_by: '123',
-    created_at: '2020-05-04 10:34:49',
-    updated_at: '2020-05-04 11:27:56',
-    ref_nr: '50120238-1',
-    fullname: 'Мария Иванова',
-    dob: '2000-01-01',
-  };
-
-  return result;
-};
-
-
-export {
-  getCases,
-  getCase,
-};
+export default sendDataToOmnichannelSocket;

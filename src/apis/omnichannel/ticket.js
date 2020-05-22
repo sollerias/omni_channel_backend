@@ -34,8 +34,8 @@ router.get('/channel/:id', async (req, res) => {
   return res.json(errorData);
 });
 
-router.put('/assign_ticket/:id', async (req, res) => {
-  if (req.params.id) {
+router.put('/:id', async (req, res) => {
+  if (req.params.id && req.body) {
     loggerFunction('channelClient', filePath, req.params.id, 'debug');
 
     return res.json(await statusAnswer(false, '00', 'OK'));
@@ -46,52 +46,52 @@ router.put('/assign_ticket/:id', async (req, res) => {
   return res.json(errorData);
 });
 
-router.put('/join_ticket/:id', async (req, res) => {
-  if (req.params.id) {
-    loggerFunction('channelClient', filePath, req.params.id, 'debug');
+// router.put('/join_ticket/:id', async (req, res) => {
+//   if (req.params.id) {
+//     loggerFunction('channelClient', filePath, req.params.id, 'debug');
 
-    return res.json(await statusAnswer(false, '00', 'OK'));
-  }
+//     return res.json(await statusAnswer(false, '00', 'OK'));
+//   }
 
-  const errorData = await statusAnswer(true, '08', 'There is no id');
-  loggerFunction('contact_typeClient', filePath, errorData, 'error');
-  return res.json(errorData);
-});
+//   const errorData = await statusAnswer(true, '08', 'There is no id');
+//   loggerFunction('contact_typeClient', filePath, errorData, 'error');
+//   return res.json(errorData);
+// });
 
-router.put('/reques_for_new_assignee/:id', async (req, res) => {
-  if (req.params.id) {
-    loggerFunction('channelClient', filePath, req.params.id, 'debug');
+// router.put('/reques_for_new_assignee/:id', async (req, res) => {
+//   if (req.params.id) {
+//     loggerFunction('channelClient', filePath, req.params.id, 'debug');
 
-    return res.json(await statusAnswer(false, '00', 'OK'));
-  }
+//     return res.json(await statusAnswer(false, '00', 'OK'));
+//   }
 
-  const errorData = await statusAnswer(true, '08', 'There is no id');
-  loggerFunction('contact_typeClient', filePath, errorData, 'error');
-  return res.json(errorData);
-});
+//   const errorData = await statusAnswer(true, '08', 'There is no id');
+//   loggerFunction('contact_typeClient', filePath, errorData, 'error');
+//   return res.json(errorData);
+// });
 
-router.put('/stick_to_case/:id', async (req, res) => {
-  if (req.params.id) {
-    loggerFunction('channelClient', filePath, req.params.id, 'debug');
+// router.put('/stick_to_case/:id', async (req, res) => {
+//   if (req.params.id) {
+//     loggerFunction('channelClient', filePath, req.params.id, 'debug');
 
-    return res.json(await statusAnswer(false, '00', 'OK'));
-  }
+//     return res.json(await statusAnswer(false, '00', 'OK'));
+//   }
 
-  const errorData = await statusAnswer(true, '08', 'There is no id');
-  loggerFunction('contact_typeClient', filePath, errorData, 'error');
-  return res.json(errorData);
-});
+//   const errorData = await statusAnswer(true, '08', 'There is no id');
+//   loggerFunction('contact_typeClient', filePath, errorData, 'error');
+//   return res.json(errorData);
+// });
 
-router.put('/archive_ticket/:id', async (req, res) => {
-  if (req.params.id) {
-    loggerFunction('channelClient', filePath, req.params.id, 'debug');
+// router.put('/archive_ticket/:id', async (req, res) => {
+//   if (req.params.id) {
+//     loggerFunction('channelClient', filePath, req.params.id, 'debug');
 
-    return res.json(await statusAnswer(false, '00', 'OK'));
-  }
+//     return res.json(await statusAnswer(false, '00', 'OK'));
+//   }
 
-  const errorData = await statusAnswer(true, '08', 'There is no id');
-  loggerFunction('contact_typeClient', filePath, errorData, 'error');
-  return res.json(errorData);
-});
+//   const errorData = await statusAnswer(true, '08', 'There is no id');
+//   loggerFunction('contact_typeClient', filePath, errorData, 'error');
+//   return res.json(errorData);
+// });
 
 module.exports = router;

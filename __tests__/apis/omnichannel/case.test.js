@@ -22,7 +22,7 @@ describe('Get cases', () => {
             previous: expect.any(String),
             results: expect.arrayContaining([
               expect.objectContaining({
-                id: expect.any(String),
+                case_id: expect.any(String),
                 created_by: expect.any(String),
                 created_at: expect.any(String),
                 // updated_at: expect.any(String),
@@ -50,7 +50,7 @@ describe('Get case', () => {
         text: expect.any(String),
         value:
           expect.objectContaining({
-            id: expect.any(String),
+            case_id: expect.any(String),
             created_by: expect.any(String),
             created_at: expect.any(String),
             updated_at: expect.any(String),

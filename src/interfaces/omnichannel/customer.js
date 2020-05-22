@@ -17,7 +17,7 @@
 
 const getCustomer = () => {
   const result = {
-    id: 'd95df7a0-bc64-40d0-8730-ecae4ef290e4',
+    customer_id: 'd95df7a0-bc64-40d0-8730-ecae4ef290e4',
     customer_type_id: '1',
     first_name: 'Петр',
     last_name: 'Иванов',
@@ -30,7 +30,7 @@ const getCustomer = () => {
 const getContacts = () => {
   const result = [
     {
-      id: '5eee4b11-6c3b-45b8-84c7-08c5a258f71d',
+      contact_id: '5eee4b11-6c3b-45b8-84c7-08c5a258f71d',
       customer_id: 'd95df7a0-bc64-40d0-8730-ecae4ef290e4',
       contact_type_id: '1',
       channel_type_id: '1',
