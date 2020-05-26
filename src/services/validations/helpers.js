@@ -39,7 +39,8 @@ export const statusAnswerValidation = async (error, status, text, value) => {
     return result;
   } catch (err) {
     const logInfo = JSON.stringify({ catchError: err.details });
-    loggerFunction('statusAnswerValidation', filePath, logInfo, 'warn');
+    loggerFunction('statusAnswerValidation', filePath, logInfo, 'error');
+
     return { catchError: err.details };
   }
 };

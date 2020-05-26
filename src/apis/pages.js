@@ -14,8 +14,20 @@ import {
 } from '../utils/helpers';
 import loggerFunction from '../services/logger';
 
+const csrf = require('csurf');
 const MemoryStore = require('memorystore')(session);
-// const chalk = require('chalk');
+
+// const csrfProtection = csrf({ cookie: true });
+const csrfProtection = csrf({
+  cookie: {
+    key: '_csrf-omnichannel',
+    // path: '/context-route',
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 3600, // 1-hour
+  },
+});
+
 const filePath = __filename;
 const router = express.Router();
 const SESS_LIFETIME = 1000 * 60 * 60 * 8;
@@ -27,6 +39,8 @@ const {
 // // console.log(SESS_NAME, SESS_SECRET, SESSION_ENV)
 const IN_PROD = SESSION_ENV === 'production';
 
+// router.use(cookieParser);
+// router.use(csrfProtection);
 // Инициализация сессии
 router.use(session({
   name: SESS_NAME,
@@ -55,21 +69,24 @@ router.use(session({
 router.use(async (req, res, next) => {
   // console.log('middleware/req.body: ', req.body);
   // console.log('middleware/client cookie: ', req.headers);
-  // // console.log('middleware/client host : ', req.headers.host);
-  // console.log('middleware/client host : ', req.get('host'));
-  // console.log('middleware/client authorization : ', req.get('authorization'));
   // // console.log('req protocol: ', req.protocol);
-  // // console.log('This is middleware session: ', req.session);
-  // console.log('middleware session.id: ', req.session.id);
-  // if (req.get('host')) {
+  const csrfHeaderToken = req.get('x-xsrf-token');
+  if (!csrfHeaderToken && req.path !== '/carma') {
+    const negativeAnswer = await statusAnswer(true, '05', 'Authentication failed: wrong headers');
+    loggerFunction('generalMiddlewareError', filePath, negativeAnswer, 'error');
+
+    return res.json(negativeAnswer);
+  }
+
   if (req.get('authorization') === `Basic ${process.env.OMNI_TOKEN}`) {
     const {
       userId,
       login,
       password,
+      csrfToken,
     } = req.session;
-    // // console.log(chalk.blue.bgWhite('We are in the middleware: ', i++))
-    if (userId) {
+
+    if (userId && csrfToken === csrfHeaderToken) {
       const userData = await getUser({
         login,
         password,
@@ -78,9 +95,10 @@ router.use(async (req, res, next) => {
     }
     next();
   } else {
-    const logInfo = await statusAnswer(true, '03', 'Authentication failed: wrong headers');
-    loggerFunction('generalMiddlewareError', filePath, logInfo, 'warn');
-    return res.json(logInfo);
+    const negativeAnswer = await statusAnswer(true, '03', 'Authentication failed: wrong headers');
+    loggerFunction('generalMiddlewareError', filePath, negativeAnswer, 'warn');
+
+    return res.json(negativeAnswer);
   }
 });
 
@@ -102,7 +120,11 @@ const redirectLogin = async (req, res, next) => {
   }
   next();
 };
-
+// Token path
+router.get('/carma', csrfProtection, (req, res) => {
+  res.cookie('XSRF-TOKEN', req.csrfToken());
+  return res.json({});
+});
 /**
  * /login - обрабатывает данные, приходящие со страницы /login.
  * Производит аутентификацию пользователя. Добавляет в сессию параметры.
@@ -110,11 +132,7 @@ const redirectLogin = async (req, res, next) => {
  * Если параметр = 1, то на клиенте происходит блокировка экрана приложения.
  */
 router.post('/login', async (req, res) => {
-  // console.log('login client cookie: ', req.headers);
-  // // console.log('req protocol: ', req.protocol);
-  // // console.log('login req.body: ', req.body);
   // // console.log('login session.id 0: ', session.id);
-  // const journalName = 'login';
   try {
     const {
       login,
@@ -129,22 +147,27 @@ router.post('/login', async (req, res) => {
       });
 
       if (userData.error === false) {
+        const csrfToken = req.get('x-xsrf-token');
         req.session.userId = userData.id;
         req.session.login = userData.login;
         req.session.password = userData.password;
-        // statusAnswer(false, '00', 'OK', encodeData(userData));
+        req.session.csrfToken = csrfToken;
+
         const answerToClient = await statusAnswer(false, '00', 'OK', await encodeData(userData));
-        // return res.json(userData);
+
         return res.json(answerToClient);
       }
       loggerFunction('userValidationError', filePath, userData, 'warn');
+
       return res.json(userData);
     }
 
     loggerFunction('userValidationError', filePath, userValidationData, 'warn');
+
     return res.json(userValidationData);
   } catch (error) {
     loggerFunction('userCreditError', filePath, parseError(error), 'error');
+
     return res.status(400).send(parseError(error));
   }
 });
@@ -154,12 +177,11 @@ router.post('/login', async (req, res) => {
  * Отправляет клиенту все данные по пользователю из локального хранилища.
  */
 router.post('/main', redirectLogin, async (req, res) => {
-  // console.log('main session.id: ', req.session.id);
-  // // console.log('Main method req.session: ', req.session)
   const {
     user,
   } = res.locals;
   loggerFunction('mainPageSuccess', filePath, await statusAnswer(false, '00', 'OK'), 'info');
+
   return res.json(await statusAnswer(false, '00', 'OK', await encodeData(user)));
 });
 
@@ -184,6 +206,7 @@ router.post('/logger', redirectLogin, async (req, res) => {
   // console.log('logger: ', req.body);
   const logInfo = JSON.stringify(req.body);
   loggerFunction('logFromClient', filePath, logInfo, 'error');
+
   return res.json(await statusAnswer(false, '00', 'OK', 'Log is written successfully'));
 });
 
@@ -198,17 +221,32 @@ router.delete('/logout', redirectLogin, async (req, res) => {
   // logging.writeLog(logDirectory, dirname, fileName, journalName, data);
   req.session.destroy(async (err) => {
     if (err) {
-      const logInfoError = await statusAnswer(true, '04', 'Session Logout error', err);
-      loggerFunction('sessionLogoutError', filePath, logInfoError, 'error');
+      const negativeAnswer = await statusAnswer(true, '04', 'Session Logout error', err);
+      loggerFunction('sessionLogout', filePath, negativeAnswer, 'error');
 
-      return res.json(logInfoError);
+      return res.json(negativeAnswer);
     }
     res.clearCookie(SESS_NAME);
-    const logInfoSuccess = await statusAnswer(false, 'OK', 'OK', 'Session Logout succeeded');
-    loggerFunction('sessionLogoutSuccess', filePath, logInfoSuccess, 'info');
+    const positiveAnswer = await statusAnswer(false, 'OK', 'OK', 'Session Logout succeeded');
+    loggerFunction('sessionLogout', filePath, positiveAnswer, 'info');
 
-    return res.json(logInfoSuccess);
+    return res.json(positiveAnswer);
   });
+});
+
+// Error handler for csrf-token errors.
+// Чтобы воспроизвести ошибку, необходимо залогиниться,
+// перейти на страницу main, затереть все куки, затем
+// обновить страницу.
+router.use(async (err, req, res, next) => {
+  if (err.code !== 'EBADCSRFTOKEN') {
+    return next(err);
+  }
+  const negativeAnswer = await statusAnswer(true, '04', 'Authentication failed: wrong token');
+  loggerFunction('csrfToken', filePath, negativeAnswer, 'error');
+
+  res.status(403);
+  return res.json(negativeAnswer);
 });
 
 module.exports = router;

@@ -4,7 +4,7 @@ const app = require('../../../src/app');
 const socketUrl = '/api/omnichannel/socket';
 const newTicketData = {
   'new assigned ticket': {
-    id: '1e3551f1-a939-4c32-a9da-fb86168198f5',
+    ticket_id: '1e3551f1-a939-4c32-a9da-fb86168198f5',
     created_by: '123',
     created_at: '2020-05-04 10:34:49',
     updated_at: null,
@@ -18,7 +18,7 @@ const newTicketData = {
 
 const newSignalData = {
   'new signal': {
-    id: 'a3e6a38a-6db2-479e-9cfe-c5a10bbdbfec',
+    signal_id: 'a3e6a38a-6db2-479e-9cfe-c5a10bbdbfec',
     created_by: '1',
     created_at: '2020-05-04 10:34:49',
     updated_at: null,
@@ -32,7 +32,7 @@ const newSignalData = {
 
 const requestForNewAssigneeData = {
   'request for a new assignee': {
-    id: '1e3551f1-a939-4c32-a9da-fb86168198f5',
+    ticket_id: '1e3551f1-a939-4c32-a9da-fb86168198f5',
     created_by: '123',
     created_at: '2020-05-04 10:34:49',
     updated_at: null,
@@ -46,7 +46,7 @@ const requestForNewAssigneeData = {
 
 const newIncomingTicketData = {
   'new incoming ticket': {
-    id: '1e3551f1-a939-4c32-a9da-fb86168198f5',
+    ticket_id: '1e3551f1-a939-4c32-a9da-fb86168198f5',
     created_by: '123',
     created_at: '2020-05-04 10:34:49',
     updated_at: null,
@@ -64,7 +64,7 @@ describe('Socket new ticket', () => {
       .post(`${socketUrl}/`)
       .send(newTicketData)
       .expect(200);
-
+    console.log(JSON.stringify(newTicketData));
     expect(response.body).toEqual(
       expect.objectContaining({
         error: expect.any(Boolean),
