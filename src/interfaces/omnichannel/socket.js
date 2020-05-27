@@ -10,7 +10,7 @@ import {
 import loggerFunction from '../../services/logger';
 
 const rp = require('request-promise-native');
-const Joi = require('@hapi/joi');
+// const Joi = require('@hapi/joi');
 
 const filePath = __filename;
 const headers = {
@@ -23,7 +23,7 @@ const headers = {
 const url = process.env.SOCKET_NOTIFY_URL;
 
 const sendDataToOmnichannelSocket = (body) => {
-  console.log('body: ', body);
+  // console.log('body: ', body);
   const options = {
     method: 'post',
     body,

@@ -64,7 +64,7 @@ describe('Socket new ticket', () => {
       .post(`${socketUrl}/`)
       .send(newTicketData)
       .expect(200);
-    console.log(JSON.stringify(newTicketData));
+
     expect(response.body).toEqual(
       expect.objectContaining({
         error: expect.any(Boolean),
