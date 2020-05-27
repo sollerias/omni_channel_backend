@@ -28,11 +28,7 @@
     "url": "https://github.com/sollerias/omni_channel_backend/issues"
   },
   "jest": {
-    "testEnvironment": "node",
-    "testPathIgnorePatterns": [
-      "/omnichannel",
-      "/utils"
-    ]
+    "testEnvironment": "node"
   },
   "homepage": "https://",
   "dependencies": {

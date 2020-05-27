@@ -1,3 +1,9 @@
+/**
+ * File: pages.test.js
+ * -----------------
+ * Tests for apis/pages.js file to test all routers
+ */
+
 import session from 'supertest-session';
 
 const app = require('../../src/app');
