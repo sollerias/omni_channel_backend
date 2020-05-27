@@ -9,7 +9,7 @@ const rateLimiter = new RateLimiterMemory({
   // For production
   // points: 6, // 6 requests
   // For tests:
-  points: 10,
+  points: 20,
   duration: 1, // per 1 second by IP
 });
 

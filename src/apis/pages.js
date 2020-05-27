@@ -70,26 +70,23 @@ router.use(async (req, res, next) => {
   // console.log('middleware/req.body: ', req.body);
   // console.log('middleware/client cookie: ', req.headers);
   // // console.log('req protocol: ', req.protocol);
+  const csrfHeaderToken = req.get('x-xsrf-token');
+  if (!csrfHeaderToken && req.path !== '/carma') {
+    const negativeAnswer = await statusAnswer(true, '05', 'Authentication failed: wrong headers');
+    loggerFunction('generalMiddlewareError', filePath, negativeAnswer, 'error');
 
-
-  // const csrfHeaderToken = req.get('x-xsrf-token');
-  // if (!csrfHeaderToken && req.path !== '/carma') {
-  //   const negativeAnswer = await statusAnswer(true, '05', 'Authentication failed: wrong headers');
-  //   loggerFunction('generalMiddlewareError', filePath, negativeAnswer, 'error');
-
-  //   return res.json(negativeAnswer);
-  // }
+    return res.json(negativeAnswer);
+  }
 
   if (req.get('authorization') === `Basic ${process.env.OMNI_TOKEN}`) {
     const {
       userId,
       login,
       password,
-      // csrfToken,
+      csrfToken,
     } = req.session;
 
-    // if (userId && csrfToken === csrfHeaderToken) {
-    if (userId) {
+    if (userId && csrfToken === csrfHeaderToken) {
       const userData = await getUser({
         login,
         password,
@@ -124,10 +121,10 @@ const redirectLogin = async (req, res, next) => {
   next();
 };
 // Token path
-// router.get('/carma', csrfProtection, (req, res) => {
-//   res.cookie('XSRF-TOKEN', req.csrfToken());
-//   return res.json({});
-// });
+router.get('/carma', csrfProtection, (req, res) => {
+  res.cookie('XSRF-TOKEN', req.csrfToken());
+  return res.json({});
+});
 /**
  * /login - обрабатывает данные, приходящие со страницы /login.
  * Производит аутентификацию пользователя. Добавляет в сессию параметры.
@@ -150,11 +147,11 @@ router.post('/login', async (req, res) => {
       });
 
       if (userData.error === false) {
-        // const csrfToken = req.get('x-xsrf-token');
+        const csrfToken = req.get('x-xsrf-token');
         req.session.userId = userData.id;
         req.session.login = userData.login;
         req.session.password = userData.password;
-        // req.session.csrfToken = csrfToken;
+        req.session.csrfToken = csrfToken;
 
         const answerToClient = await statusAnswer(false, '00', 'OK', await encodeData(userData));
 

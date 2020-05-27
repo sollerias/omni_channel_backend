@@ -1,36 +1,36 @@
-// import request from 'supertest';
-// import request from 'supertest-session';
 import session from 'supertest-session';
-import csrf from 'csurf';
 
-// const express = require('express');
-// const session = require('express-session');
-const cookieParser = require('cookie-parser');
 const app = require('../../src/app');
-
-app.use(cookieParser());
 
 let testSession = null;
 
-beforeEach(async () => {
-  testSession = await session(app);
-});
-
-const csrfProtection = csrf({ cookie: true });
+let csrfToken = '';
 
 const userOne = {
   login: 'kek',
   password: 'vorobek',
 };
 
+const tokenUrl = '/api/pages/carma';
 const loginUrl = '/api/pages/login';
 const mainUrl = '/api/pages/main';
 const loggerUrl = '/api/pages/logger';
 const logoutUrl = '/api/pages/logout';
 
+beforeEach(async () => {
+  testSession = await session(app);
 
+  // Request for getting csrfToken value
+  await testSession
+    .get(tokenUrl)
+    .set('authorization', `Basic ${process.env.OMNI_TOKEN}`)
+    .send(userOne)
+    .expect(200);
 
-// const agent = request.agent(app);
+  const token = testSession.cookies.find((cookie) => cookie.name === 'XSRF-TOKEN');
+  csrfToken = token.value;
+});
+
 /**
  * TODO: fix this error on test launch:
  * Jest did not exit one second after the test run has completed.
@@ -38,38 +38,28 @@ const logoutUrl = '/api/pages/logout';
  * weren't stopped in your tests. Consider running Jest
  * with `--detectOpenHandles` to troubleshoot this issue.
  */
-
-describe('Страница входа пользователя в приложение', () => {
-  // it('Must get csrf key', async () => {
-  // it('Must get csrf key', function () {
-  //   const response = request(app)
-  //     .get('/api/pages/carma')
-  //     // .set('Cookie', `XSRF-TOKEN: ${request.csrfToken()}`)
-  //     .expect(200, function (err, res) {
-  //       if (err) return done(err)
-  //       var token = res.text
-
-  //       request(server)
-  //         .post('/')
-  //         .set('Cookie', cookies(res))
-  //         .send('_csrf=' + encodeURIComponent(token))
-  //         .expect(200, done)
-  //     });
-  //   // console.log(response.body);
-  //   // console.log(response.header);
-  //   // console.log(response.signedCookies);
-
-  //   // expect(response.body).toBeNull();
-  // });
-
-  it('Должен осуществиться вход существующего пользователя', async () => {
+describe('Login page', () => {
+  it('Should get csrf token', async () => {
     const response = await testSession
-      .post(loginUrl)
+      .get(tokenUrl)
       .set('authorization', `Basic ${process.env.OMNI_TOKEN}`)
       .send(userOne)
       .expect(200);
 
-    // console.log(response.body);
+    const token = testSession.cookies.find((cookie) => cookie.name === 'XSRF-TOKEN');
+    csrfToken = token.value;
+
+    expect(response.body).toEqual({});
+  });
+
+  it('Should login user', async () => {
+    const response = await testSession
+      .post(loginUrl)
+      .set('X-XSRF-TOKEN', `${csrfToken}`)
+      .set('authorization', `Basic ${process.env.OMNI_TOKEN}`)
+      .send(userOne)
+      .expect(200);
+
     expect(response.body).toEqual(
       expect.objectContaining({
         error: false,
@@ -80,9 +70,10 @@ describe('Страница входа пользователя в приложе
     );
   });
 
-  test('Не должен осуществиться вход несуществующего пользователя', async () => {
+  test('Should not login nonexistent user', async () => {
     const response = await testSession
       .post(loginUrl)
+      .set('X-XSRF-TOKEN', `${csrfToken}`)
       .send({
         login: 'shmyak',
         password: '123',
@@ -94,15 +85,16 @@ describe('Страница входа пользователя в приложе
         error: expect.any(Boolean),
         status: expect.any(String),
         text: expect.any(String),
+        value: null,
       }),
     );
-    expect(response.body.value).toBeNull();
   });
 
-  test('Не должен осуществиться вход если не введен логин', async () => {
+  test('Should not login user without username', async () => {
     // console.log(app)
     const response = await testSession
       .post(loginUrl)
+      .set('X-XSRF-TOKEN', `${csrfToken}`)
       .send({
         password: '123',
       })
@@ -118,9 +110,10 @@ describe('Страница входа пользователя в приложе
     expect(response.body.value).toBeNull();
   });
 
-  test('Не должен осуществиться вход если не введен пароль', async () => {
+  test('Should not login user without password', async () => {
     const response = await testSession
       .post(loginUrl)
+      .set('X-XSRF-TOKEN', `${csrfToken}`)
       .send({
         login: 'shmyak',
       })
@@ -138,10 +131,11 @@ describe('Страница входа пользователя в приложе
 });
 
 describe('another pages', () => {
+  // Authorization to get sessionId
   beforeEach(async () => {
-    // testSession = await session(app);
     await testSession
       .post(loginUrl)
+      .set('X-XSRF-TOKEN', `${csrfToken}`)
       .set('authorization', `Basic ${process.env.OMNI_TOKEN}`)
       .send(userOne)
       .expect(200);
@@ -150,6 +144,7 @@ describe('another pages', () => {
   it('Should allow user to get main page', async () => {
     const response = await testSession
       .post(mainUrl)
+      .set('X-XSRF-TOKEN', `${csrfToken}`)
       .set('authorization', `Basic ${process.env.OMNI_TOKEN}`)
       .send(userOne)
       .expect(200);
@@ -167,6 +162,7 @@ describe('another pages', () => {
   it('Should allow user to get logger page', async () => {
     const response = await testSession
       .post(loggerUrl)
+      .set('X-XSRF-TOKEN', `${csrfToken}`)
       .set('authorization', `Basic ${process.env.OMNI_TOKEN}`)
       .send(userOne)
       .expect(200);
@@ -184,6 +180,7 @@ describe('another pages', () => {
   it('Should allow user to get logout page', async () => {
     const response = await testSession
       .delete(logoutUrl)
+      .set('X-XSRF-TOKEN', `${csrfToken}`)
       .set('authorization', `Basic ${process.env.OMNI_TOKEN}`)
       .send(userOne)
       .expect(200);
