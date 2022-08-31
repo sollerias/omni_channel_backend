@@ -42,7 +42,7 @@
     "hpp": "^0.2.3",
     "lodash": "^4.17.15",
     "memorystore": "^1.6.2",
-    "moment-timezone": "^0.5.28",
+    "moment-timezone": "^0.5.35",
     "rate-limiter-flexible": "^2.1.4",
     "request-promise-native": "^1.0.8",
     "simple-node-logger": "^18.12.24"
